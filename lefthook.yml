@@ -1,0 +1,6 @@
+prepare-commit-msg:
+  jobs:
+    - name: auto-commit-message
+      run: chatgpt-commit-msg-gen {1} {2}
+      fail_text: "コミットメッセージの自動生成をスキップしました"
+

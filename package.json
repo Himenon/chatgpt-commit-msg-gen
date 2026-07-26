@@ -1,0 +1,23 @@
+{
+  "name": "@himenon/chatgpt-commit-msg-gen",
+  "version": "0.1.0",
+  "description": "Generate Conventional Commits messages with the Codex CLI or OpenAI API",
+  "license": "MIT",
+  "author": "K.Himeno",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Himenon/chatgpt-commit-msg-gen.git"
+  },
+  "bin": {
+    "chatgpt-commit-msg-gen": "bin/chatgpt-commit-msg-gen"
+  },
+  "files": ["bin/"],
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "test": "cd go && go test ./...",
+    "release:npm:registry": "pnpm publish --access public --no-git-checks",
+    "release:github:registry": "pnpm publish --access public --no-git-checks"
+  },
+  "engines": { "node": ">=24.13.0" },
+  "packageManager": "pnpm@10.31.0"
+}
