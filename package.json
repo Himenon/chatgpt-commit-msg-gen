@@ -1,7 +1,7 @@
 {
   "name": "@himenon/chatgpt-commit-msg-gen",
   "version": "0.1.0",
-  "description": "Codex CLIまたはOpenAI APIを使ってConventional Commits形式のコミットメッセージを生成するCLI",
+  "description": "Generate Conventional Commits messages with the Codex CLI or OpenAI API",
   "license": "MIT",
   "author": "K.Himeno",
   "repository": {
@@ -21,4 +21,3 @@
   "engines": { "node": ">=24.13.0" },
   "packageManager": "pnpm@10.31.0"
 }
-
