@@ -36,6 +36,9 @@ func TestIsConventionalCommit(t *testing.T) {
 func TestGenerateWithAPI(t *testing.T) {
 	previousClient := apiHTTPClient
 	apiHTTPClient = &http.Client{Transport: roundTripFunc(func(r *http.Request) (*http.Response, error) {
+		if r.Method != http.MethodPost || r.URL.Path != "/v1/responses" {
+			t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
+		}
 		if r.Header.Get("Authorization") != "Bearer test-key" {
 			t.Error("missing authorization")
 		}
@@ -43,25 +46,52 @@ func TestGenerateWithAPI(t *testing.T) {
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			t.Fatal(err)
 		}
-		if body.Model != "test-model" || body.Input != "prompt" || body.Store {
+		if body.Model != "test-model" || body.Input != "prompt" || body.Store || body.MaxOutputTokens != 321 {
 			t.Errorf("unexpected body: %#v", body)
 		}
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Header:     make(http.Header),
-			Body:       io.NopCloser(bytes.NewBufferString(`{"output":[{"type":"message","content":[{"type":"output_text","text":"feat: テストを追加"}]}]}`)),
+			Body:       io.NopCloser(bytes.NewBufferString(`{"output":[{"type":"reasoning","summary":[]},{"type":"message","content":[{"type":"output_text","text":"feat(cli): "},{"type":"output_text","text":"Responses API対応"}]}]}`)),
 		}, nil
 	})}
 	t.Cleanup(func() { apiHTTPClient = previousClient })
 	t.Setenv("OPENAI_API_KEY", "test-key")
 	t.Setenv("OPENAI_MODEL", "test-model")
+	t.Setenv("OPENAI_MAX_OUTPUT_TOKENS", "321")
 	t.Setenv("OPENAI_BASE_URL", "https://example.invalid")
 	got, err := generateWithAPI("prompt")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got != "feat: テストを追加" {
+	if got != "feat(cli): Responses API対応" {
 		t.Fatalf("got %q", got)
+	}
+}
+
+func TestGenerateWithAPIDefaultModelAndOutputLimit(t *testing.T) {
+	previousClient := apiHTTPClient
+	apiHTTPClient = &http.Client{Transport: roundTripFunc(func(r *http.Request) (*http.Response, error) {
+		var body responseRequest
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Fatal(err)
+		}
+		if body.Model != "gpt-6-luna" || body.MaxOutputTokens != 512 {
+			t.Errorf("unexpected default request settings: model=%q max_output_tokens=%d", body.Model, body.MaxOutputTokens)
+		}
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Header:     make(http.Header),
+			Body:       io.NopCloser(bytes.NewBufferString(`{"output":[{"type":"message","content":[{"type":"output_text","text":"fix: handle API errors"}]}]}`)),
+		}, nil
+	})}
+	t.Cleanup(func() { apiHTTPClient = previousClient })
+	t.Setenv("OPENAI_API_KEY", "test-key")
+	t.Setenv("OPENAI_MODEL", "")
+	t.Setenv("OPENAI_MAX_OUTPUT_TOKENS", "")
+	t.Setenv("OPENAI_BASE_URL", "https://example.invalid")
+	if _, err := generateWithAPI("prompt"); err != nil {
+		t.Fatal(err)
 	}
 }
 

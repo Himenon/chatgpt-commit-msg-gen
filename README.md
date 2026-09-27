@@ -55,8 +55,8 @@ git commit
 | `COMMIT_PROMPT` | 内蔵プロンプト | 生成ルールを完全に上書き |
 | `CODEX_MODEL` | Codex設定値 | Codex CLIで使うモデル |
 | `OPENAI_API_KEY` | — | Responses APIの認証キー |
-| `OPENAI_MODEL` | `gpt-5.6-luna` | APIで使うモデル |
-| `OPENAI_MAX_OUTPUT_TOKENS` | `150` | APIの最大出力トークン数 |
+| `OPENAI_MODEL` | `gpt-6-luna` | APIで使うモデル |
+| `OPENAI_MAX_OUTPUT_TOKENS` | `512` | APIの最大出力トークン数 |
 | `OPENAI_BASE_URL` | `https://api.openai.com` | OpenAI互換エンドポイントのベースURL |
 
 例:
@@ -65,8 +65,8 @@ git commit
       env:
         COMMIT_GENERATOR: auto
         COMMIT_LANGUAGE: en
-        CODEX_MODEL: gpt-5.3-codex
-        OPENAI_MODEL: gpt-5.6-luna
+        CODEX_MODEL: gpt-6-sol
+        OPENAI_MODEL: gpt-6-luna
 ```
 
 プロジェクトの `lefthook.yml` を変更したくない場合は、`lefthook-local.yml` を `.gitignore` に追加して同じ設定を記述できます。
