@@ -13,9 +13,9 @@ git commit
             └─ Conventional Commits形式を検証してCOMMIT_EDITMSGへ挿入
 ```
 
-`COMMIT_GENERATOR=codex` または `api` で生成元を固定できます。既定の `auto` はCodex CLIを優先します。Codexは `--sandbox read-only` と `--ephemeral` で実行し、コミットメッセージ生成以外のリポジトリ変更やセッション保存を避けます。
+`COMMIT_GENERATOR=codex` または `api` で生成元を固定できます。既定の `auto` はCodex CLIを優先します。Codex CLIは `codex exec -` にプロンプトをstdinで渡し、`--sandbox read-only` と `--ephemeral` で実行します。`--output-last-message` で最終応答を受け取るため、コミットメッセージ生成以外のリポジトリ変更やセッション保存を避けます。
 
-OpenAI APIは `POST /v1/responses` を直接呼び出します。リクエストは `store: false`、`text.verbosity: low` とし、外部Goパッケージには依存しません。
+OpenAI APIは `POST /v1/responses` を直接呼び出します。既定モデルは `gpt-6-luna` で、リクエストは `store: false`、`text.verbosity: low` とし、出力トークン上限は512です。Responses APIの `output` 配列全体からテキストを集約します。外部Goパッケージには依存しません。
 
 ## 安全性と失敗時の挙動
 

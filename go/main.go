@@ -21,8 +21,8 @@ var apiHTTPClient = http.DefaultClient
 
 const (
 	defaultBaseURL         = "https://api.openai.com"
-	defaultModel           = "gpt-5.6-luna"
-	defaultMaxOutputTokens = 150
+	defaultModel           = "gpt-6-luna"
+	defaultMaxOutputTokens = 512
 	maxDiffSize            = 50000
 	requestTimeout         = 30 * time.Second
 	defaultPromptJa        = `以下のgit diffを分析し、Conventional Commits形式のコミットメッセージを1行だけ生成してください。
@@ -247,12 +247,16 @@ func generateWithAPI(prompt string) (string, error) {
 		}
 		return "", fmt.Errorf("APIエラー (%d)", resp.StatusCode)
 	}
+	var output strings.Builder
 	for _, item := range parsed.Output {
 		for _, content := range item.Content {
 			if content.Type == "output_text" && content.Text != "" {
-				return content.Text, nil
+				output.WriteString(content.Text)
 			}
 		}
+	}
+	if output.Len() > 0 {
+		return output.String(), nil
 	}
 	return "", fmt.Errorf("レスポンスにテキストがありません")
 }

@@ -19,5 +19,5 @@
     "release:github:registry": "pnpm publish --access public --no-git-checks"
   },
   "engines": { "node": ">=24.13.0" },
-  "packageManager": "pnpm@10.31.0"
+  "packageManager": "pnpm@12.6.0"
 }
