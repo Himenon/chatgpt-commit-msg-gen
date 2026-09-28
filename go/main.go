@@ -145,14 +145,18 @@ func generate(prompt string) (string, string, error) {
 		}
 	}
 	if mode == "auto" || mode == "api" {
-		msg, err := generateWithAPI(prompt)
-		if err == nil {
-			if cleaned, valid := validMessage(msg); valid {
-				return cleaned, "OpenAI API", nil
+		if mode == "auto" && os.Getenv("OPENAI_API_KEY") == "" {
+			failures = append(failures, "OpenAI API: OPENAI_API_KEY が未設定のためフォールバックをスキップしました（Codex CLIが成功すればAPIキーは不要です）")
+		} else {
+			msg, err := generateWithAPI(prompt)
+			if err == nil {
+				if cleaned, valid := validMessage(msg); valid {
+					return cleaned, "OpenAI API", nil
+				}
+				err = fmt.Errorf("生成結果がConventional Commits形式ではありません")
 			}
-			err = fmt.Errorf("生成結果がConventional Commits形式ではありません")
+			failures = append(failures, "OpenAI API: "+err.Error())
 		}
-		failures = append(failures, "OpenAI API: "+err.Error())
 	}
 	return "", "", errors.New(strings.Join(failures, "; "))
 }
