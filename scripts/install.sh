@@ -18,5 +18,4 @@ mkdir -p "$INSTALL_DIR"
 curl -fsSL "https://github.com/${REPO}/releases/download/${VERSION}/${ASSET_NAME}" -o "${INSTALL_DIR}/${BINARY_NAME}"
 chmod +x "${INSTALL_DIR}/${BINARY_NAME}"
 echo "Installed: ${INSTALL_DIR}/${BINARY_NAME}"
-echo "Run 'codex login' or set OPENAI_API_KEY, then configure Lefthook."
-
+echo "Run 'codex login' to use Codex without an API key, or set OPENAI_API_KEY for API fallback, then configure Lefthook."
